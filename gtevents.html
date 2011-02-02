@@ -4,45 +4,82 @@
 <head>
 <title>gtEvents</title>
 <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.css" />
+<link rel="stylesheet/less" href="gtevents.less" />
 <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.js"></script>
+<script src="less-1.0.41.min.js"></script>
 </head>
 <body>
 <!-- Remember to remove the BODY end tag -->
 
 <!-- Start of first page -->
-<div data-role="page" id="foo">
-
-  <div class="header-space">
-    <h1>Foo</h1>
-  </div><!-- /header -->
+<div data-role="page" id="main">
+  <header data-role="header">
+    <h1>GtEvent</h1>
+  </header><!-- /header -->
 
   <div data-role="content">
-    <p>I'm first in the source order so I'm shown as the page.</p>
-    <p>View internal page called <a href="#bar">bar</a></p>
+  <ul data-role="listview">
+  	<li data-role="list-divider" data-groupingtheme="b">Today <span class="event-list-divider-count">12</span></li>
+  	<li>
+  		<div class="event-list-time">31st Jan 3:00 - 2nd Feb 5:00 pm</div>
+  		<div class="event-list-title-container">
+	  		<div class="event-list-thumbnail"></div>
+	  		<div class="event-list-title-details-container">
+		  		<div class="event-list-title">FutureMedia Fest 2010</div>
+		  		<div class="event-list-organizer">by College of Computing</div>
+		  		<div class="event-list-location">at Georgia Tech Hotel and Conference Center</div>
+		  	</div>
+		</div>
+  		<div class="event-list-tab">
+  			<span class="event-list-tab-friend">35 friends</span>
+  			<span class="event-list-tab-attendees">146 attendees</span>
+  		</div>
+  	</li>
+  	<div class="event-list-tab-extended">
+  		<div class="event-list-tab-extended-friend-desc">35 friends are attending</div>
+  		<div class="event-list-tab-extended-friend-profile-pic-container">
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  			<div class="event-list-tab-extended-friend-profile-pic"></div>
+  		</div>
+  	</div>
+  	<li>Test Event 2</li>
+  	<li>Test Event 3</li>
+  	<li>Test Event 4</li>
+  	<li>Test Event 5</li>
+  </ul>
   </div><!-- /content -->
 
-  <div data-role="footer">
+  <footer data-role="footer">
     <h4>Page Footer</h4>
-  </div><!-- /header -->
+  </footer><!-- /footer -->
 </div><!-- /page -->
 
 
 <!-- Start of second page -->
 <div data-role="page" id="bar">
 
-  <div  class="header-space">
+  <header data-role="header">
     <h1>Bar</h1>
-  </div><!-- /header -->
+  </header><!-- /header -->
 
   <div data-role="content">
     <p>I'm first in the source order so I'm shown as the page.</p>
-    <p><a href="#foo">Back to foo</a></p>
+    <p><a href="#main">Back to foo</a></p>
   </div><!-- /content -->
 
-  <div data-role="footer">
+  <footer data-role="footer">
     <h4>Page Footer</h4>
-  </div><!-- /header -->
+  </footer><!-- /footer -->
 </div><!-- /page -->
 
 </body>
