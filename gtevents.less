@@ -155,11 +155,11 @@
 /* LESS: Class definition */
 
 .letterpress-light{
-	text-shadow: 1px 1px 0px rgb(255,255,255);
+	text-shadow: 0px 1px 0px rgb(255,255,255);
 }
 
 .letterpress-dark{
-	text-shadow: -1px -1px 0px rgb(0,0,0);
+	text-shadow: 0px -1px 0px rgb(0,0,0);
 }
 
 .lettershadow{
@@ -186,7 +186,26 @@
 
 /* LESS: Class definition*/
 
+/* jQuery Mobile Style Override */
+
+.ui-li .ui-btn-text {
+	overflow: visible;
+}
+
+.ui-btn-inner, .ui-li .ui-btn-text{
+	white-space: normal;
+}
+
+.ui-li .ui-btn-inner {
+	padding-right: 35px;
+	padding-bottom: 0.4em;
+}
+
+/* jQuery Mobile Style Override */
+
 span.event-list-divider-count{
+	color: white;
+	.letterpress-dark;
 	background: #888;
 	padding: 0em 0.5em;
 	.border-radius(0.75em);
@@ -198,25 +217,31 @@ span.event-list-divider-count{
 
 .event-list-time{
 	color: #3a96cc;
-	font-size: 1.1em;
+	font-size: 0.9em;
+	font-weight: normal;
 	.letterpress-light;
 	
-	padding-bottom: 0.5em;
+	padding-bottom: 0.4em;
 }
 
-@event-thumbnail: 5em;
+.event-list-time-span{
+	font-weight: bold;
+}
+
+@event-thumbnail: 4.4em;
 
 .event-list-thumbnail{
 	.fixed-width-height(@event-thumbnail,@event-thumbnail);
 	.box-shadow-inset(0px,0px,1em,0,rgba(0,0,0,0.5);
 	.border-radius(0.5em);
+	border: 1px solid rgba(0,0,0,0.4);
 	float: left;
 	
 	margin-right: 1em;
 }
 
 .event-list-title-details-container{
-	padding-left: @event-thumbnail + 1em;
+	padding-left: @event-thumbnail + 0.8em;
 }
 
 .event-list-title-details-container:after{
@@ -224,26 +249,27 @@ span.event-list-divider-count{
 }
 
 .event-list-title{
-	font-size: 1.1em;
-	padding-bottom: 1em;
+	font-size: 1em;
+	padding-top: 0.1em;
+	padding-bottom: 0.9em;
 }
 
 .event-list-organizer{
-	font-size: 0.8em;
+	font-size: 0.7em;
 	color: #bebebe;
 	.letterpress-light;
 }
 
 .event-list-location{
-	font-size: 0.8em;
+	font-size: 0.7em;
 	color: #bebebe;
 	.letterpress-light;
 }
 
 .event-list-tab{
 	text-align: center;
-	padding-top: 0.75em;
-	font-size: 0.9em;
+	padding-top: 0.9em;
+	font-size: 0.8em;
 	width: 100%;
 }
 
@@ -266,6 +292,7 @@ span.event-list-divider-count{
 	padding-left: 1em;
 	padding-top: 0.5em;
 	padding-bottom: 0.5em;
+	display: none;
 }
 
 .event-list-tab-extended:after{
@@ -275,13 +302,16 @@ span.event-list-divider-count{
 .event-list-tab-extended-friend-desc{
 	color: white;
 	.lettershadow;
-	font-size: 0.75em;
+	font-size: 0.8em;
 	padding-bottom: 0.5em;
 }
 
 .event-list-tab-extended-friend-profile-pic-container{
 	min-height: 100%;
-	width: 9999px;
+}
+
+.event-list-tab-extended-friend-profile-pic-container:after{
+	.auto-clear;
 }
 
 .event-list-tab-extended-friend-profile-pic{
@@ -291,4 +321,8 @@ span.event-list-divider-count{
 	.border-radius(7px);
 	.box-shadow(1px,1px,3px);
 	margin-right: 0.4em;
+}
+
+.event-list-tab-extended{
+	display: normal;
 }
