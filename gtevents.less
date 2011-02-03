@@ -201,6 +201,11 @@
 	padding-bottom: 0.4em;
 }
 
+.ui-li-desc{
+	text-overflow: none;
+	white-space: normal;
+}
+
 /* jQuery Mobile Style Override */
 
 span.event-list-divider-count{
@@ -228,10 +233,10 @@ span.event-list-divider-count{
 	font-weight: bold;
 }
 
-@event-thumbnail: 4.4em;
+@event-list-thumbnail: 4.4em;
 
 .event-list-thumbnail{
-	.fixed-width-height(@event-thumbnail,@event-thumbnail);
+	.fixed-width-height(@event-list-thumbnail,@event-list-thumbnail);
 	.box-shadow-inset(0px,0px,1em,0,rgba(0,0,0,0.5);
 	.border-radius(0.5em);
 	border: 1px solid rgba(0,0,0,0.4);
@@ -241,7 +246,7 @@ span.event-list-divider-count{
 }
 
 .event-list-title-details-container{
-	padding-left: @event-thumbnail + 0.8em;
+	padding-left: @event-list-thumbnail + 0.8em;
 }
 
 .event-list-title-details-container:after{
@@ -325,4 +330,88 @@ span.event-list-divider-count{
 
 .event-list-tab-extended{
 	display: normal;
+}
+
+@event-detail-thumbnail: 6em;
+.detail-view-thumbnail{
+	float: left;
+	.fixed-width-height(@event-detail-thumbnail,@event-detail-thumbnail);
+	.box-shadow-inset(0px,0px,1em,0,rgba(0,0,0,0.5);
+	.border-radius(0.5em);
+	border: 1px solid rgba(0,0,0,0.4);
+}
+
+.detail-view-title-container{
+	padding-left: @event-detail-thumbnail + 0.8em;
+}
+
+.detail-view-title-container:after{
+	.auto-clear;
+}
+
+.detail-view-title{
+	font-size: 1.2em;
+	margin: 0.3em 0;
+}
+
+.detail-view-organizer, .detail-view-location{
+	font-size: 0.8em;
+	color: #777;
+	margin: 0;
+}
+
+.detail-view-start-end-time > li{
+	font-size: 1em;
+}
+
+.detail-view-start-end-time > li > span{
+	float: right;
+	font-weight: normal;
+}
+
+@attendees-thumbnail: 4em;
+.attendees-view-thumbnail {
+	float: left;
+	.fixed-width-height(@attendees-thumbnail,@attendees-thumbnail);
+	.box-shadow-inset(0px,0px,0.7em,0,rgba(0,0,0,0.5);
+	.border-radius(0.5em);
+	border: 1px solid rgba(0,0,0,0.4);
+}
+
+.attendees-view-name {
+	margin-top: 1.2em;
+	margin-left: 1em;
+	float: left;
+}
+
+.attendees-view-name:after{
+	.auto-clear;
+}
+
+@wall-thumbnail: 4em;
+.wall-view-thumbnail {
+	float: left;
+	.fixed-width-height(@wall-thumbnail,@wall-thumbnail);
+	.box-shadow-inset(0px,0px,0.7em,0,rgba(0,0,0,0.5);
+	.border-radius(0.5em);
+	border: 1px solid rgba(0,0,0,0.4);
+}
+
+
+.wall-view-content-container{
+	padding-left: @wall-thumbnail + 0.8em;
+}
+
+.wall-view-name {
+	display: inline;
+	font-weight: bold;
+}
+
+.wall-view-content {
+	display: inline;
+}
+
+.wall-view-post-time{
+	padding-top: 1.2em;
+	color: #777;
 }

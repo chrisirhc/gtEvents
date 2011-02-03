@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Testing Ground</title>
+		<style type="text/css">
+			
+		</style>
+		
+		<script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#alink').bind('click', function(e){
+					e.preventDefault();
+					console.log(e);
+				});
+			});
+		</script>
+		
+	</head>
+	<body>
+		<a id="alink" href="index.html">A Link</a>
+	</body>
+</html>

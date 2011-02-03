@@ -44,11 +44,13 @@ $.fn.slideToggle_webkit = function(speed){
 /* webkit css animation as substitute */
 
 $(document).ready(function(){
+	
+	
 	$('.event-list-tab-friend').bind('click',function(event){
-		
-		/* does not work: still go to follow link */
+		/* do not follow link when click on tab in list */
 		event.stopPropagation();
 		log(event.isPropagationStopped());
+		event.preventDefault();
 		
 		/* assume static content */
 		var $extendedPanel = $(this).parent().parent().parent().parent().parent().next('.event-list-tab-extended');
