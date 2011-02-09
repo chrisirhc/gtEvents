@@ -8,7 +8,12 @@
 <script src="less-1.0.41.min.js"></script>
 <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.js"></script>
-<script src="jquery.horizontal-touch-slider.js"></script>
+
+<script src="lawnchair/Lawnchair.js"></script>
+<script src="lawnchair/LawnchairAdaptorHelpers.js"></script>
+<script src="lawnchair/WebkitSQLiteAdaptor.js"></script>
+<script src="lawnchair/DOMStorageAdaptor.js"></script>
+
 <script src="gtevents.js"></script>
 </head>
 <body>
@@ -153,16 +158,16 @@
 	<div data-role="header" data-theme="d"> 
 		<h1>Description</h1>
 	</div>
-	<div data-role="content" data-theme="c">
-		<h3>Description</h3>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<div data-role="content">
+		<p id="description-view-content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 	</div>
 </div>
 
 
 <!-- #page navigation is not supported. http://forum.jquery.com/topic/persistent-navigation-between-pages -->
+<!-- for the sake of speed, dont use data-position="fixed" -->
 <div data-role="page" id="friends">
-	<div data-role="header" data-theme="d" data-position="fixed"> 
+	<div data-role="header" data-theme="d"> 
 		<h1>Friends</h1>
 	</div>
 	<div data-role="content" data-theme="c">
@@ -204,41 +209,13 @@
 </div>
 
 <div data-role="page" id="attendees">
-	<div data-role="header" data-theme="d" data-position="fixed"> 
+	<div data-role="header" data-theme="d"> 
 		<h1>Attendees</h1>
 	</div>
 	<div data-role="content" data-theme="c">
-		<ul data-role="listview">
+		<ul data-role="listview" id="attendees-view-list">
 			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
+				<div class="attendees-view-thumbnail" style="background-image: https://graph.facebook.com/569746586/picture"></div>
 				<h3 class="attendees-view-name">Lorem Ipsum</h3>
 			</li>
 		</ul>
@@ -250,39 +227,7 @@
 		<h1>Wall</h1>
 	</div>
 	<div data-role="content" data-theme="c">
-		<ul data-role="listview">
-			<li>
-				<div class="wall-view-thumbnail"></div>
-				<div class="wall-view-content-container">
-					<p class="wall-view-name">Felix Lau</p>
-					<p class="wall-view-content">This is cool asdf asdf  a sdf as dfj asdf asd fkjas dflashguwrengje rgluerg erger eirg;oierjgleuhgeuhgeaughaeiufhwuahrfu awerfu ahrlifuhasliufhlawiu fhliwu li are;oigje;origjaoeri goeirjgoei jfoer</p>
-					<p class="wall-view-post-time">2 hours ago</p>
-				</div>
-			</li>
-			<li>
-				<div class="wall-view-thumbnail"></div>
-				<div class="wall-view-content-container">
-					<p class="wall-view-name">Felix Lau</p>
-					<p class="wall-view-content">This is cool asdf asdf  a sdf as dfj asdf asd fkjas dflashguwrengje rgluerg erger eirg;oierjgleuhgeuhgeaughaeiufhwuahrfu awerfu ahrlifuhasliufhlawiu fhliwu li are;oigje;origjaoeri goeirjgoei jfoer</p>
-					<p class="wall-view-post-time">2 hours ago</p>
-				</div>
-			</li>
-			<li>
-				<div class="wall-view-thumbnail"></div>
-				<div class="wall-view-content-container">
-					<p class="wall-view-name">Felix Lau</p>
-					<p class="wall-view-content">This is cool asdf asdf  a sdf as dfj asdf asd fkjas dflashguwrengje rgluerg erger eirg;oierjgleuhgeuhgeaughaeiufhwuahrfu awerfu ahrlifuhasliufhlawiu fhliwu li are;oigje;origjaoeri goeirjgoei jfoer</p>
-					<p class="wall-view-post-time">2 hours ago</p>
-				</div>
-			</li>
-			<li>
-				<div class="wall-view-thumbnail"></div>
-				<div class="wall-view-content-container">
-					<p class="wall-view-name">Felix Lau</p>
-					<p class="wall-view-content">This is cool asdf asdf  a sdf as dfj asdf asd fkjas dflashguwrengje rgluerg erger eirg;oierjgleuhgeuhgeaughaeiufhwuahrfu awerfu ahrlifuhasliufhlawiu fhliwu li are;oigje;origjaoeri goeirjgoei jfoer</p>
-					<p class="wall-view-post-time">2 hours ago</p>
-				</div>
-			</li>
+		<ul data-role="listview" id="wall-view-list">
 			<li>
 				<div class="wall-view-thumbnail"></div>
 				<div class="wall-view-content-container">

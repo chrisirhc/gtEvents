@@ -184,6 +184,12 @@
 	content: "."; display: block; height: 0; clear: both; visibility: hidden;
 }
 
+.thumbnail-center{
+	background-size: auto auto%;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
 /* LESS: Class definition*/
 
 /* jQuery Mobile Style Override */
@@ -248,8 +254,8 @@ span.event-list-divider-count{
 	.border-radius(0.5em);
 	border: 1px solid rgba(0,0,0,0.4);
 	float: left;
-	
 	margin-right: 1em;
+	.thumbnail-center;
 }
 
 .event-list-title-details-container{
@@ -346,6 +352,7 @@ span.event-list-divider-count{
 	.box-shadow-inset(0px,0px,1em,0,rgba(0,0,0,0.5);
 	.border-radius(0.5em);
 	border: 1px solid rgba(0,0,0,0.4);
+	.thumbnail-center
 }
 
 .detail-view-title-container{
@@ -383,6 +390,8 @@ span.event-list-divider-count{
 	.box-shadow-inset(0px,0px,0.7em,0,rgba(0,0,0,0.5);
 	.border-radius(0.5em);
 	border: 1px solid rgba(0,0,0,0.4);
+	overflow: hidden;
+	.thumbnail-center
 }
 
 .attendees-view-name {
@@ -402,6 +411,7 @@ span.event-list-divider-count{
 	.box-shadow-inset(0px,0px,0.7em,0,rgba(0,0,0,0.5);
 	.border-radius(0.5em);
 	border: 1px solid rgba(0,0,0,0.4);
+	.thumbnail-center
 }
 
 
@@ -412,6 +422,7 @@ span.event-list-divider-count{
 .wall-view-name {
 	display: inline;
 	font-weight: bold;
+	padding-right: 0.5em;
 }
 
 .wall-view-content {

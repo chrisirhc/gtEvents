@@ -34,7 +34,7 @@ span.event-list-divider-count{color:white;text-shadow:0px -1px 0px #000000;backg
 .detail-view-organizer,.detail-view-location{font-size:0.8em;color:#777;margin:0;}
 .detail-view-start-end-time>li{font-size:1em;}
 .detail-view-start-end-time>li>span{float:right;font-weight:normal;}
-.attendees-view-thumbnail{float:left;min-width:4em;max-width:4em;min-height:4em;max-height:4em;-webkit-box-shadow:inset 0px 0px 0.7em 0 rgba(0, 0, 0, 0.5);-moz-box-shadow:inset 0px 0px 0.7em 0 rgba(0, 0, 0, 0.5);box-shadow:inset 0px 0px 0.7em 0 rgba(0, 0, 0, 0.5);-webkit-border-radius:0.5em;-moz-border-radius:0.5em;border-radius:0.5em;border:1px solid rgba(0, 0, 0, 0.4);}
+.attendees-view-thumbnail{float:left;min-width:4em;max-width:4em;min-height:4em;max-height:4em;-webkit-box-shadow:inset 0px 0px 0.7em 0 rgba(0, 0, 0, 0.5);-moz-box-shadow:inset 0px 0px 0.7em 0 rgba(0, 0, 0, 0.5);box-shadow:inset 0px 0px 0.7em 0 rgba(0, 0, 0, 0.5);-webkit-border-radius:0.5em;-moz-border-radius:0.5em;border-radius:0.5em;border:1px solid rgba(0, 0, 0, 0.4);overflow:hidden;background-size:100%;}
 .attendees-view-name{margin-top:1.2em;margin-left:1em;float:left;}
 .attendees-view-name:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
 .wall-view-thumbnail{float:left;min-width:4em;max-width:4em;min-height:4em;max-height:4em;-webkit-box-shadow:inset 0px 0px 0.7em 0 rgba(0, 0, 0, 0.5);-moz-box-shadow:inset 0px 0px 0.7em 0 rgba(0, 0, 0, 0.5);box-shadow:inset 0px 0px 0.7em 0 rgba(0, 0, 0, 0.5);-webkit-border-radius:0.5em;-moz-border-radius:0.5em;border-radius:0.5em;border:1px solid rgba(0, 0, 0, 0.4);}
