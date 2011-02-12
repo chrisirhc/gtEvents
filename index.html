@@ -9,20 +9,19 @@
 <script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.js"></script>
 
-<script src="lawnchair/Lawnchair.js"></script>
-<script src="lawnchair/LawnchairAdaptorHelpers.js"></script>
-<script src="lawnchair/WebkitSQLiteAdaptor.js"></script>
-<script src="lawnchair/DOMStorageAdaptor.js"></script>
+<script src="jquery.offline.js"></script>
+
 
 <script src="gtevents.js"></script>
 </head>
 <body>
 <!-- Remember to remove the BODY end tag -->
 
-<!-- Start of first page -->
+<!-- Start of main page -->
 <div data-role="page" id="main">
   <header data-role="header" data-theme="a">
     <h1>GtEvents</h1>
+    <a href="http://localhost:3000/login/" class="fb-connect-btn ui-btn-right"><img src="fbconnect.png" /></a>
   </header><!-- /header -->
 
   <div data-role="content">
@@ -81,6 +80,7 @@
 
   <header data-role="header">
     <h1>Event Details</h1>
+    <a href="http://localhost:3000/login/" class="fb-connect-btn ui-btn-right"><img src="fbconnect.png" /></a>
   </header><!-- /header -->
 
   <div data-role="content" class="ui-body">
@@ -91,9 +91,9 @@
 		  	<p class="detail-view-organizer">by College of Computing</p>
 		</div>
 		
-		<div class="rsvp" data-role="fieldcontain">
+		<div id="rsvp-container" data-role="fieldcontain">
 			<label for="rsvp-status" class="select">RSVP Status:</label>
-			<select name="rsvp-status" id="srsvp-status">
+			<select name="rsvp-status" id="rsvp-status">
 				<option value="not-decided">Not decided</option>
 				<option value="attending">Attending</option>
 				<option value="maybe">Maybe</option>
@@ -121,17 +121,17 @@
 		</div>
 		
 		<ul class="detail-view-details" data-role="listview" data-inset="true">
-			<li><a href="#friends">Friends</a></li>
-			<li><a href="#attendees">Other Attendees</a></li>
+			<li id="detail-view-friend-list"><a href="#friends">Friends</a> <span class="ui-li-count">12</span></li>
+			<li id="detail-view-atendees-list"><a href="#attendees">All Attendees</a> <span class="ui-li-count">12</span></li>
 		</ul>
 		
 		<ul class="detail-view-details" data-role="listview" data-inset="true">
-			<li><a href="#description">Description</a></li>
-			<li><a href="#wall">Wall</a></li>
+			<li id="detail-view-desc"><a href="#description">Description</a><p id="detail-view-desc-p"> This is the description when it is too long long long long long long long </p></li>
+			<li id="detail-view-wall"><a href="#wall">Wall <span class="ui-li-count">12</span></a></li>
 		</ul>
 		
 		<ul class="detail-view-details" data-role="listview" data-inset="true">
-			<li><a href="#">View in Facebook</a></li>
+			<li id="detail-view-view-fb"><a href="#">View in Facebook</a></li>
 			<li><a href="#">Add to Google Calendar</a></li>
 			<li><a href="#share" data-rel="dialog" data-transition="slideup" data-icon="check">Share...</a></li>
 		</ul>
