@@ -5,41 +5,25 @@ function log(x){
 /* shorthand method for debugging */
 
 var detailEventId;
-var gtid = 'hlau'
+var gtid = 'hlau';
 
 $(document).ready(function(){
 	
 	/* http://forum.jquery.com/topic/jquery-mobile-equivalent-of-document-ready */
-	/* $(document).ready for each page */
-	/* TODO: Fire ready functions when the page is refreshed */
+	/* jquery mobile page ready function */
+	/* init GTEVENTS.Pages object */
 	if (typeof GTEVENTS == 'undefined') GTEVENTS = {};
 	if (typeof GTEVENTS.Pages == 'undefined') GTEVENTS.Pages = {};
-	jQuery("div[data-role*='page']").live('pageshow', function(event, ui) {
-        var thisId=$(this).attr("id")
-        thisId = thisId.replace(/\.html$/gi,"");
-        if (typeof GTEVENTS.Pages[thisId] == 'function')  {
-                GTEVENTS.Pages[thisId].call(this);
-        }
-	});
-	
-	/* expandable top 5 attending friend */
-	$('.event-list-tab-friend').bind('click',function(event){
-		/* do not follow link when click on tab in list */
-		event.stopPropagation();
-		log(event.isPropagationStopped());
-		event.preventDefault();
-		
-		/* assume static content */
-		var $extendedPanel = $(this).parent().parent().parent().parent().parent().next('.event-list-tab-extended');
-		$extendedPanel.slideToggle('fast');
-	},false)
 	
 	/* combine fb connect link with gtid */
 	$('.fb-connect-btn').attr('href','http://localhost:3000/login/'+gtid);
-	
 	/* check if the user has connected with fb or not and hide certain functions */
-	$.getJSON('http://localhost:3000/' + gtid + '?callback=?', function(data, status){
-		if (data.login_status){
+	/* status store offline so that there is no delay to hide the facebook img */
+	$.retrieveJSON('http://localhost:3000/status/' + gtid + '?callback=?', function(json, status, data){
+		json = eval(json);
+		log(json.login_status);
+		if (json.login_status == 'true'){
+			/* logged in */
 			$('.fb-connect-btn').hide();
 		}
 		else{
@@ -50,65 +34,92 @@ $(document).ready(function(){
 		}
 	});
 	
+	/* #main page ready function */
+	GTEVENTS.Pages.main = function(){
 	
-	/* Start the grabbing of the data from the server */
-	
-	$.retrieveJSON("http://localhost:3000/event/list/time/"+gtid+"?callback=?", function (json, status, data) {
-	    var i, eObj;
-	    json = eval(json); // DANGEROUS!
-	    console.log(json);
-	    $("#eventlist").html('');
-	    for (i = 0; i < json.length && (eObj = json[i]); i++) {
-	    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
-	        $("#eventlist").append(
-	           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
-	           	+ '<div class="event-list-time">'
-	           	+ parseTime(eObj["start_time"])[0]
-	           	+'<span class="event-list-time-span">'
-	           	+ parseTime(eObj["start_time"])[1]
-	           	+ '</span> - '
-	           	+ parseTime(eObj["end_time"])[0]
-	           	+ '<span class="event-list-time-span">'
-	           	+ parseTime(eObj["end_time"])[1]
-	           	+ '</span></div>'
-	           	+ '<div class="event-list-title-container">'
-		  		+ '<div class="event-list-thumbnail" style="background-image: url('
-		  		+ eObj['pic']
-		  		+')"></div>'
-		  		+ '<div class="event-list-title-details-container">'
-		  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
-			  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
-			  	+ '<div class="event-list-location">' + location_ + '</div>'
-			  	+ '</div>'
-	    		+ '</div>'
-	    		+ '<div class="clear"></div>'
-	      		+ '<div class="event-list-tab">'
-	      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
-	                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
-	      		+ '</div>'
-	            + '</a></li>');
-    	}
-    	$("#eventlist").listview("refresh");
-    
-	    /* manually handle link forwarding */
-	    $('#eventlist > li').bind('click', function(event){
-			detailEventId = ($(this).attr('id'));
-			
+		/* expandable top 5 attending friend */
+		$('.event-list-tab-friend').bind('click',function(event){
+			/* do not follow link when click on tab in list */
 			event.stopPropagation();
+			log(event.isPropagationStopped());
 			event.preventDefault();
 			
-			$.mobile.changePage('#detail', 'slide', false, true);
-		});
+			/* assume static content */
+			var $extendedPanel = $(this).parent().parent().parent().parent().parent().next('.event-list-tab-extended');
+			$extendedPanel.slideToggle('fast');
+		},false)
 		
-  	});
-  
-  	/* detail view page ready function */
+		
+		/* Start the grabbing of the data from the server */
+		
+		$.retrieveJSON("http://localhost:3000/event/list/time/"+gtid+"?callback=?", function (json, status, data) {
+		    var i, eObj;
+		    json = eval(json); // DANGEROUS!
+		    console.log(json);
+		    $("#eventlist").html('');
+		    for (i = 0; i < json.length && (eObj = json[i]); i++) {
+		    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
+		        $("#eventlist").append(
+		           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
+		           	+ '<div class="event-list-time">'
+		           	+ parseTime(eObj["start_time"])[0]
+		           	+'<span class="event-list-time-span">'
+		           	+ parseTime(eObj["start_time"])[1]
+		           	+ '</span> - '
+		           	+ parseTime(eObj["end_time"])[0]
+		           	+ '<span class="event-list-time-span">'
+		           	+ parseTime(eObj["end_time"])[1]
+		           	+ '</span></div>'
+		           	+ '<div class="event-list-title-container">'
+			  		+ '<div class="event-list-thumbnail" style="background-image: url('
+			  		+ eObj['pic']
+			  		+')"></div>'
+			  		+ '<div class="event-list-title-details-container">'
+			  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
+				  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
+				  	+ '<div class="event-list-location">' + location_ + '</div>'
+				  	+ '</div>'
+		    		+ '</div>'
+		    		+ '<div class="clear"></div>'
+		      		+ '<div class="event-list-tab">'
+		      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
+		                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
+		      		+ '</div>'
+		            + '</a></li>');
+	    	}
+	    	$("#eventlist").listview("refresh");
+	    
+		    /* manually handle link forwarding */
+		    $('#eventlist > li').bind('click', function(event){
+				detailEventId = ($(this).attr('id'));
+				setLocalStorage("detailEventId", detailEventId);
+				
+				event.stopPropagation();
+				event.preventDefault();
+				
+				$.mobile.changePage('#detail', 'slide', false, true);
+			});
+			
+	  	});
+	
+	}
+	
+	
+	/* #detail view page ready function */
 	GTEVENTS.Pages.detail = function(){
 		var eventObj;
-		log(detailEventId);
+		detailEventId = getLocalStorage("detailEventId");
+		console.log(detailEventId);
+		
+		var rsvpStatusWord = [];
+		rsvpStatusWord['noreply'] = 0;
+		rsvpStatusWord['attending'] = 1;
+		rsvpStatusWord['maybe'] = 2;
+		rsvpStatusWord['no'] = 3;
 		
 		$.retrieveJSON("http://localhost:3000/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
 			json = eval(json); // DANGEROUS!
+			log(json);
 			$('.detail-view-thumbnail').css('background-image', 'url(' + json.pic_big + ')');
 			$('.detail-view-title').html(json.name);
 			$('.detail-view-location').html('at ' + json.location);
@@ -116,15 +127,29 @@ $(document).ready(function(){
 			$('#detail-view-start-li span').html( parseTime(json.start_time)[0] + " " + parseTime(json.start_time)[1]);
 			$('#detail-view-end-li span').html( parseTime(json.end_time)[0] + " " + parseTime(json.end_time)[1]);
 			$('#detail-view-desc-p').html( json.description.slice(0,100) );
+			$('#detail-view-friend-count').html(json.friend_count);
+			$('#detail-view-attendees-count').html(json.total_count);
+			
+			$('#rsvp-status option')[ rsvpStatusWord[json.rsvp_status] ]['selected'] = true;
+			
 		});
+		
+/*
+		$('#rsvp-status option')[0]['selected'] = true
+		$('#rsvp-status').selectmenu('refresh',true);
+*/
+		
+		
 		
 	}
 	
-	/* attendees view ready function */
+	/* #attendees view ready function */
 	GTEVENTS.Pages.attendees = function(){
 		$.mobile.pageLoading();
-		$("#attendees-view-list").html('');
-		$.retrieveJSON("http://localhost:3000/event/attendance/event:fb:" + detailEventId + "?callback=?" , function(json,status,data){
+		detailEventId = getLocalStorage("detailEventId");
+		
+		$.retrieveJSON("http://localhost:3000/event/attendance/total/event:fb:" + detailEventId + "?callback=?" , function(json,status,data){
+			$("#attendees-view-list").html('');
 			json = eval(json); // DANGEROUS!
 			for (i=0; i<json.length; i++){
 				$("#attendees-view-list").append(
@@ -141,26 +166,29 @@ $(document).ready(function(){
 		});
 	}
 	
+	/* #wall view ready function */
 	GTEVENTS.Pages.wall = function(){
 		$.mobile.pageLoading();
-		$("#wall-view-list").html('');
-		$.retrieveJSON("http://localhost:3000/event/feed/" + detailEventId + "?callback=?" , function(json,status,data){
-		json = eval(json);
-		if (json.length > 0){
-				for (i=0; i<json.length; i++){
-					$("#wall-view-list").append(
-						'<li><div class="wall-view-thumbnail" style="background-image: url('
-						+ 'https://graph.facebook.com/' + json[i].id + '/picture'
-						+')"></div><div class="wall-view-content-container"><p class="wall-view-name">'
-						+ json[i].name
-						+ '</p><p class="wall-view-content">'
-						+ json[i].message
-						+ '</p><p class="wall-view-post-time">'
-						+ parseTime(json[i].update_time)[0]
-						+ ' ' + parseTime(json[i].update_time)[1]
-						+ '</p></div></li>'
-					);
-				}
+		detailEventId = getLocalStorage("detailEventId");
+		$.retrieveJSON("http://localhost:3000/event/feed/event:fb:" + detailEventId + "?callback=?" , function(json,status,data){
+			$("#wall-view-list").html('');
+			json = eval(json);
+			log(json);
+			if (json.length > 0){
+					for (i=0; i<json.length; i++){
+						$("#wall-view-list").append(
+							'<li><div class="wall-view-thumbnail" style="background-image: url('
+							+ 'https://graph.facebook.com/' + json[i].id + '/picture'
+							+')"></div><div class="wall-view-content-container"><p class="wall-view-name">'
+							+ json[i].name
+							+ '</p><p class="wall-view-content">'
+							+ json[i].message
+							+ '</p><p class="wall-view-post-time">'
+							+ parseTime(json[i].update_time)[0]
+							+ ' ' + parseTime(json[i].update_time)[1]
+							+ '</p></div></li>'
+						);
+					}
 			}
 			else{
 				$("#wall-view-list").html('<li>No wall post for this event<li>');
@@ -170,13 +198,58 @@ $(document).ready(function(){
 		});
 	}
 	
+	/* #description view ready function */
 	GTEVENTS.Pages.description = function(){
 		$('#description-view-content').html('');
+		detailEventId = getLocalStorage("detailEventId");
 		$.retrieveJSON("http://localhost:3000/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
 			json = eval(json);
 			$('#description-view-content').html(json.description.replace(/\n/g,'<br />'));
 		});
 	}
+	
+	GTEVENTS.Pages.friends = function(){
+		$('#description-view-content').html('');
+		detailEventId = getLocalStorage("detailEventId");
+		$.retrieveJSON("http://localhost:3000/event/attendance/friend/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
+			$("#friends-view-list").html('');
+			json = eval(json); // DANGEROUS!
+			if (json.length > 0){
+				for (i=0; i<json.length; i++){
+					$("#friends-view-list").append(
+						'<li><div class="friends-view-thumbnail" style="background-image: url('
+						+ 'https://graph.facebook.com/' + json[i].uid + '/picture'
+						+ ');">'
+						+ '</div><h3 class="friends-view-name">'
+						+ json[i].name
+						+ '</h3></div>'
+					);
+				}
+			} else {
+				$("#friends-view-list").html('<li>No wall post for this event<li>');
+			}
+			$("#friends-view-list").listview("refresh");
+			$.mobile.pageLoading(true);
+		});
+	}
+	
+	
+	/* call function when either the page is transition to or when this is the page */
+	jQuery("div[data-role*='page']").live('pageshow', function(event, ui) {
+        var thisId=$(this).attr("id")
+        thisId = thisId.replace(/\.html$/gi,"");
+        if (typeof GTEVENTS.Pages[thisId] == 'function')  {
+                GTEVENTS.Pages[thisId].call(this);
+        }
+	});
+	thisPageHash = window.location.hash.slice(1);
+	if (typeof GTEVENTS.Pages[thisPageHash] == 'function')  {
+    	GTEVENTS.Pages[thisPageHash].call(this);
+    }
+    if (thisPageHash == ""){ // for main page
+    	GTEVENTS.Pages.main.call();
+    }
+	
 });
 
 /* take in UNIX time in string format and output [0] as date and [1] as time */
@@ -202,4 +275,32 @@ function parseTime(time){
 	output[1] = hour + ":" + minute + " " + ampm;
 	
 	return output;
+}
+
+/* simple wrapper for local storage: set function */
+function setLocalStorage(key,value){
+	if (typeof(localStorage) != 'undefined' ){
+		try {
+			localStorage.setItem(key,value); //saves to the database, “key”, “value”
+		} catch (e) {
+			if (e == QUOTA_EXCEEDED_ERR) {
+				console.log('LocalStorage: Quota Exceeded');
+			}
+		}
+	}
+}
+
+/* simple wrapper for local storage: get function */
+function getLocalStorage(key){
+	var value;
+	if (typeof(localStorage) != 'undefined' ){
+		try {
+			value = localStorage.getItem(key); //saves to the database, “key”, “value”
+		} catch (e) {
+			if (e == QUOTA_EXCEEDED_ERR) {
+				console.log('LocalStorage: Quota Exceeded');
+			}
+		}
+	}
+	return value;
 }

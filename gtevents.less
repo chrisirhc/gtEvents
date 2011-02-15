@@ -185,7 +185,7 @@
 }
 
 .thumbnail-center{
-	background-size: 100% 100%;
+	background-size: auto 100%;
 	background-position: center;
 	background-repeat: no-repeat;
 }
@@ -403,7 +403,7 @@ span.event-list-divider-count{
 }
 
 @attendees-thumbnail: 4em;
-.attendees-view-thumbnail {
+.attendees-view-thumbnail, .friends-view-thumbnail {
 	float: left;
 	.fixed-width-height(@attendees-thumbnail,@attendees-thumbnail);
 	.box-shadow-inset(0px,0px,0.7em,0,rgba(0,0,0,0.5);
@@ -414,13 +414,13 @@ span.event-list-divider-count{
 	.thumbnail-center;
 }
 
-.attendees-view-name {
+.attendees-view-name, .friends-view-name {
 	margin-top: 1.2em;
 	margin-left: 1em;
 	float: left;
 }
 
-.attendees-view-name:after{
+.attendees-view-name:after, .friends-view-name:after{
 	.auto-clear;
 }
 

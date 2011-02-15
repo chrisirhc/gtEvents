@@ -121,8 +121,8 @@
 		</div>
 		
 		<ul class="detail-view-details" data-role="listview" data-inset="true">
-			<li id="detail-view-friend-list"><a href="#friends">Friends</a> <span class="ui-li-count">12</span></li>
-			<li id="detail-view-atendees-list"><a href="#attendees">All Attendees</a> <span class="ui-li-count">12</span></li>
+			<li id="detail-view-friend-list"><a href="#friends">Friends</a> <span class="ui-li-count" id="detail-view-friend-count">12</span></li>
+			<li id="detail-view-attendees-list"><a href="#attendees">All Attendees</a> <span class="ui-li-count" id="detail-view-attendees-count">12</span></li>
 		</ul>
 		
 		<ul class="detail-view-details" data-role="listview" data-inset="true">
@@ -171,38 +171,10 @@
 		<h1>Friends</h1>
 	</div>
 	<div data-role="content" data-theme="c">
-		<ul data-role="listview">
+		<ul data-role="listview" id="friends-view-list">
 			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Dude</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Dude</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Dude</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Dude</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Dude</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
-			</li>
-			<li>
-				<div class="attendees-view-thumbnail"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
+				<div class="friends-view-thumbnail" style="background-image: https://graph.facebook.com/569746586/picture"></div>
+				<h3 class="friends-view-name">Lorem Ipsum</h3>
 			</li>
 		</ul>
 	</div>
