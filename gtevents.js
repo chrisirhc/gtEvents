@@ -344,7 +344,7 @@ $(document).ready(function(){
 				log ( $('#rsvp-status option:selected').attr('value') );
 				var rsvpStatus = $('#rsvp-status option:selected').attr('value')
 				$.getJSON("http://"+ SERVER_ADDRESS +"/event/rsvp/"+ rsvpStatus +"/event:fb:"+ detailEventId +"/"+ gtid + "?callback=?", function(data){
-					if (data.response != 'true'){
+					if (!data.response){
 						popErrorMessage('Error in setting RSVP status');
 						$('#rsvp-status option').eq( rsvpStatusWord[json.rsvp_status] ).attr('selected', 'selected');
 						
