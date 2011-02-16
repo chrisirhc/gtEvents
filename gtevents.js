@@ -5,8 +5,11 @@ function log(x){
 /* shorthand method for debugging */
 
 var detailEventId;
-var gtid = 'hlau8';
-var SERVER_ADDRESS = 'localhost:3000'
+/* var gtid = 'hlau8'; */
+var gtid = PORTAL_CLIENT.getUsername();
+
+
+var SERVER_ADDRESS = 'chrisirhc.no.de';
 
 var firstLandOnMain = true;
 
