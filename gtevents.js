@@ -5,7 +5,8 @@ function log(x){
 /* shorthand method for debugging */
 
 var detailEventId;
-var gtid = 'hlau';
+var gtid = 'hlau8';
+var SERVER_ADDRESS = 'localhost:3000'
 
 $(document).ready(function(){
 	
@@ -16,15 +17,19 @@ $(document).ready(function(){
 	if (typeof GTEVENTS.Pages == 'undefined') GTEVENTS.Pages = {};
 	
 	/* combine fb connect link with gtid */
-	$('.fb-connect-btn').attr('href','http://localhost:3000/login/'+gtid);
+	$('.fb-connect-btn').attr('href','http://'+ SERVER_ADDRESS +'/login/'+gtid);
 	/* check if the user has connected with fb or not and hide certain functions */
-	/* status store offline so that there is no delay to hide the facebook img */
-	$.retrieveJSON('http://localhost:3000/status/' + gtid + '?callback=?', function(json, status, data){
-		json = eval(json);
+	/* status store offline so that there is no delay in hiding the facebook img */
+	$.retrieveJSON('http://'+ SERVER_ADDRESS +'/status/' + gtid + '?callback=?', function(json, status, data){
+		jQuery.parseJSON(json);
 		log(json.login_status);
 		if (json.login_status == 'true'){
 			/* logged in */
 			$('.fb-connect-btn').hide();
+			$('#rsvp-container').show();
+			$('#detail-view-friend-list').show();
+			$('#detail-view-wall').show();
+			$('.detail-view-details').listview('refresh');
 		}
 		else{
 			$('#rsvp-container').hide();
@@ -41,7 +46,6 @@ $(document).ready(function(){
 		$('.event-list-tab-friend').bind('click',function(event){
 			/* do not follow link when click on tab in list */
 			event.stopPropagation();
-			log(event.isPropagationStopped());
 			event.preventDefault();
 			
 			/* assume static content */
@@ -49,47 +53,110 @@ $(document).ready(function(){
 			$extendedPanel.slideToggle('fast');
 		},false)
 		
+		getAllEvent();
 		
 		/* Start the grabbing of the data from the server */
+	  	
+	  	$('#event-list-tab-all-link').bind('click',function(event){
+	  		event.stopPropagation();
+	  		event.preventDefault();
+	  		getAllEvent();
+	  	});
+	  	
+	  	$('#event-list-tab-all-invited').bind('click',function(event){
+	  		event.stopPropagation();
+	  		event.preventDefault();
+	  		getAllEvent();
+	  	});
 		
-		$.retrieveJSON("http://localhost:3000/event/list/time/"+gtid+"?callback=?", function (json, status, data) {
-		    var i, eObj;
-		    json = eval(json); // DANGEROUS!
-		    console.log(json);
-		    $("#eventlist").html('');
-		    for (i = 0; i < json.length && (eObj = json[i]); i++) {
-		    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
-		        $("#eventlist").append(
-		           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
-		           	+ '<div class="event-list-time">'
-		           	+ parseTime(eObj["start_time"])[0]
-		           	+'<span class="event-list-time-span">'
-		           	+ parseTime(eObj["start_time"])[1]
-		           	+ '</span> - '
-		           	+ parseTime(eObj["end_time"])[0]
-		           	+ '<span class="event-list-time-span">'
-		           	+ parseTime(eObj["end_time"])[1]
-		           	+ '</span></div>'
-		           	+ '<div class="event-list-title-container">'
-			  		+ '<div class="event-list-thumbnail" style="background-image: url('
-			  		+ eObj['pic']
-			  		+')"></div>'
-			  		+ '<div class="event-list-title-details-container">'
-			  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
-				  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
-				  	+ '<div class="event-list-location">' + location_ + '</div>'
-				  	+ '</div>'
-		    		+ '</div>'
-		    		+ '<div class="clear"></div>'
-		      		+ '<div class="event-list-tab">'
-		      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
-		                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
-		      		+ '</div>'
-		            + '</a></li>');
-	    	}
-	    	$("#eventlist").listview("refresh");
-	    
-		    /* manually handle link forwarding */
+		function getInvitedEvent(){
+			$.mobile.pageLoading();
+			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/invited/"+gtid+"?callback=?", function (json, status, data) {
+			    var i, eObj;
+			    jQuery.parseJSON(json);
+			    console.log(json);
+			    $("#eventlist").html('');
+			    for (i = 0; i < json.length && (eObj = json[i]); i++) {
+			    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
+			        $("#eventlist").append(
+			           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
+			           	+ '<div class="event-list-time">'
+			           	+ parseTime(eObj["start_time"])[0]
+			           	+'<span class="event-list-time-span">'
+			           	+ parseTime(eObj["start_time"])[1]
+			           	+ '</span> - '
+			           	+ parseTime(eObj["end_time"])[0]
+			           	+ '<span class="event-list-time-span">'
+			           	+ parseTime(eObj["end_time"])[1]
+			           	+ '</span></div>'
+			           	+ '<div class="event-list-title-container">'
+				  		+ '<div class="event-list-thumbnail" style="background-image: url('
+				  		+ eObj['pic']
+				  		+')"></div>'
+				  		+ '<div class="event-list-title-details-container">'
+				  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
+					  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
+					  	+ '<div class="event-list-location">' + location_ + '</div>'
+					  	+ '</div>'
+			    		+ '</div>'
+			    		+ '<div class="clear"></div>'
+			      		+ '<div class="event-list-tab">'
+			      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
+			                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
+			      		+ '</div>'
+			            + '</a></li>');
+		    	}
+		    	$("#eventlist").listview("refresh");
+		    	$.mobile.pageLoading(true);
+		    	bindLink();		
+		  	});
+		}
+		
+		function getAllEvent(){
+			$.mobile.pageLoading();
+			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/time/"+gtid+"?callback=?", function (json, status, data) {
+			    var i, eObj;
+			    jQuery.parseJSON(json);
+			    console.log(json);
+			    $("#eventlist").html('');
+			    for (i = 0; i < json.length && (eObj = json[i]); i++) {
+			    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
+			        $("#eventlist").append(
+			           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
+			           	+ '<div class="event-list-time">'
+			           	+ parseTime(eObj["start_time"])[0]
+			           	+'<span class="event-list-time-span">'
+			           	+ parseTime(eObj["start_time"])[1]
+			           	+ '</span> - '
+			           	+ parseTime(eObj["end_time"])[0]
+			           	+ '<span class="event-list-time-span">'
+			           	+ parseTime(eObj["end_time"])[1]
+			           	+ '</span></div>'
+			           	+ '<div class="event-list-title-container">'
+				  		+ '<div class="event-list-thumbnail" style="background-image: url('
+				  		+ eObj['pic']
+				  		+')"></div>'
+				  		+ '<div class="event-list-title-details-container">'
+				  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
+					  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
+					  	+ '<div class="event-list-location">' + location_ + '</div>'
+					  	+ '</div>'
+			    		+ '</div>'
+			    		+ '<div class="clear"></div>'
+			      		+ '<div class="event-list-tab">'
+			      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
+			                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
+			      		+ '</div>'
+			            + '</a></li>');
+		    	}
+		    	$("#eventlist").listview("refresh");
+		    	$.mobile.pageLoading(true);
+		    	bindLink();		
+		  	});
+		}
+			
+		function bindLink(){
+			/* manually handle link forwarding */
 		    $('#eventlist > li').bind('click', function(event){
 				detailEventId = ($(this).attr('id'));
 				setLocalStorage("detailEventId", detailEventId);
@@ -99,10 +166,10 @@ $(document).ready(function(){
 				
 				$.mobile.changePage('#detail', 'slide', false, true);
 			});
-			
-	  	});
-	
+		}
+		
 	}
+	
 	
 	
 	/* #detail view page ready function */
@@ -112,13 +179,13 @@ $(document).ready(function(){
 		console.log(detailEventId);
 		
 		var rsvpStatusWord = [];
-		rsvpStatusWord['noreply'] = 0;
+		rsvpStatusWord['not_replied'] = 0;
 		rsvpStatusWord['attending'] = 1;
 		rsvpStatusWord['maybe'] = 2;
-		rsvpStatusWord['no'] = 3;
+		rsvpStatusWord['declined'] = 3;
 		
-		$.retrieveJSON("http://localhost:3000/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
-			json = eval(json); // DANGEROUS!
+		$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
+			jQuery.parseJSON(json);
 			log(json);
 			$('.detail-view-thumbnail').css('background-image', 'url(' + json.pic_big + ')');
 			$('.detail-view-title').html(json.name);
@@ -130,16 +197,20 @@ $(document).ready(function(){
 			$('#detail-view-friend-count').html(json.friend_count);
 			$('#detail-view-attendees-count').html(json.total_count);
 			
-			$('#rsvp-status option')[ rsvpStatusWord[json.rsvp_status] ]['selected'] = true;
 			
-		});
-		
-/*
-		$('#rsvp-status option')[0]['selected'] = true
-		$('#rsvp-status').selectmenu('refresh',true);
-*/
-		
-		
+			/* RSVP get status*/
+			$('#rsvp-status option')[ rsvpStatusWord[json.rsvp_status] ]['selected'] = true;
+			$('#rsvp-status').selectmenu('refresh',true);
+			
+			/* RSVP set status*/
+			$('#rsvp-status').change(function(){
+				$.mobile.pageLoading();
+				log ( $('#rsvp-status option:selected').attr('value') );
+				var rsvpStatus = $('#rsvp-status option:selected').attr('value')
+				$.getJSON("http://"+ SERVER_ADDRESS +"/event/rsvp/"+ rsvpStatus +"/event:fb:"+ detailEventId +"/"+ gtid, function(data){ log(data); $.mobile.pageLoading(true); });
+			});
+			
+		});	
 		
 	}
 	
@@ -148,9 +219,9 @@ $(document).ready(function(){
 		$.mobile.pageLoading();
 		detailEventId = getLocalStorage("detailEventId");
 		
-		$.retrieveJSON("http://localhost:3000/event/attendance/total/event:fb:" + detailEventId + "?callback=?" , function(json,status,data){
+		$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/attendance/total/event:fb:" + detailEventId + "?callback=?" , function(json,status,data){
 			$("#attendees-view-list").html('');
-			json = eval(json); // DANGEROUS!
+			jQuery.parseJSON(json);
 			for (i=0; i<json.length; i++){
 				$("#attendees-view-list").append(
 					'<li><div class="attendees-view-thumbnail" style="background-image: url('
@@ -170,9 +241,9 @@ $(document).ready(function(){
 	GTEVENTS.Pages.wall = function(){
 		$.mobile.pageLoading();
 		detailEventId = getLocalStorage("detailEventId");
-		$.retrieveJSON("http://localhost:3000/event/feed/event:fb:" + detailEventId + "?callback=?" , function(json,status,data){
+		$.retrieveJSON("http://"+ SERVER_ADDRESS +":3000/event/feed/event:fb:" + detailEventId + "?callback=?" , function(json,status,data){
 			$("#wall-view-list").html('');
-			json = eval(json);
+			jQuery.parseJSON(json);
 			log(json);
 			if (json.length > 0){
 					for (i=0; i<json.length; i++){
@@ -202,8 +273,8 @@ $(document).ready(function(){
 	GTEVENTS.Pages.description = function(){
 		$('#description-view-content').html('');
 		detailEventId = getLocalStorage("detailEventId");
-		$.retrieveJSON("http://localhost:3000/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
-			json = eval(json);
+		$.retrieveJSON("http://"+ SERVER_ADDRESS +":3000/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
+			jQuery.parseJSON(json);
 			$('#description-view-content').html(json.description.replace(/\n/g,'<br />'));
 		});
 	}
@@ -211,9 +282,9 @@ $(document).ready(function(){
 	GTEVENTS.Pages.friends = function(){
 		$('#description-view-content').html('');
 		detailEventId = getLocalStorage("detailEventId");
-		$.retrieveJSON("http://localhost:3000/event/attendance/friend/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
+		$.retrieveJSON("http://"+ SERVER_ADDRESS +":3000/event/attendance/friend/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
 			$("#friends-view-list").html('');
-			json = eval(json); // DANGEROUS!
+			jQuery.parseJSON(json);
 			if (json.length > 0){
 				for (i=0; i<json.length; i++){
 					$("#friends-view-list").append(

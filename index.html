@@ -25,7 +25,14 @@
   </header><!-- /header -->
 
   <div data-role="content">
-  <ul id="eventlist" data-role="listview" data-dividertheme="c" data-filter="true">
+  	<div id="event-list-tab-button-container">
+		<div id="event-list-tab-button" data-theme="b" data-role="controlgroup" data-type="horizontal">
+			<a id="event-list-tab-all-link" href="" data-role="button">All</a>
+			<a id="event-list-tab-all-attending" href="" data-role="button">Attending</a>
+			<a id="event-list-tab-all-invited" href="" data-role="button">Invited</a>
+		</div>
+	</div>
+  <ul id="eventlist" data-role="listview" data-dividertheme="c">
   	<li data-role="list-divider" data-groupingtheme="b">Today <span class="event-list-divider-count">12</span></li>
   	<li><a href="#bar">
   		<div class="event-list-time">Jan 31st <span class="event-list-time-span">3:00 pm</span> - Feb 2nd <span class="event-list-time-span">5:00 pm</span></div>
@@ -94,10 +101,10 @@
 		<div id="rsvp-container" data-role="fieldcontain">
 			<label for="rsvp-status" class="select">RSVP Status:</label>
 			<select name="rsvp-status" id="rsvp-status">
-				<option value="not-decided">Not decided</option>
+				<option value="not_replied">Not decided</option>
 				<option value="attending">Attending</option>
 				<option value="maybe">Maybe</option>
-				<option value="no">No</option>
+				<option value="declined">Decline</option>
 			</select>
 		</div>
 		
