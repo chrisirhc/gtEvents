@@ -7,7 +7,6 @@ function log(x){
 var detailEventId;
 /* var gtid = 'hlau8'; */
 var gtid;
-
 var SERVER_ADDRESS = 'chrisirhc.no.de';
 
 var firstLandOnMain = true;
@@ -336,7 +335,7 @@ $(document).ready(function(){
 			$('#detail-view-wall-count').html(json.feed_count);
 			
 			/* RSVP get status*/
-			$('#rsvp-status option')[ rsvpStatusWord[json.rsvp_status] ]['selected'] = true;
+			$('#rsvp-status option').eq( rsvpStatusWord[json.rsvp_status] ).attr('selected', 'selected');
 			$('#rsvp-status').selectmenu('refresh',true);
 			
 			/* RSVP set status*/
@@ -345,14 +344,30 @@ $(document).ready(function(){
 				log ( $('#rsvp-status option:selected').attr('value') );
 				var rsvpStatus = $('#rsvp-status option:selected').attr('value')
 				$.getJSON("http://"+ SERVER_ADDRESS +"/event/rsvp/"+ rsvpStatus +"/event:fb:"+ detailEventId +"/"+ gtid + "?callback=?", function(data){
-					$.parseJSON(data);
 					if (data.response != 'true'){
 						popErrorMessage('Error in setting RSVP status');
-						$('#rsvp-status option')[ rsvpStatusWord[json.rsvp_status] ]['selected'] = true;
-						$('#rsvp-status').selectmenu('refresh',true);
+						$('#rsvp-status option').eq( rsvpStatusWord[json.rsvp_status] ).attr('selected', 'selected');
+						
+					} else {
+						/* $('#rsvp-status option[value="not_replied"]').remove(); */
 					}
+					$('#rsvp-status').selectmenu('refresh',true);
 				});
 			});
+			
+			var googleCalendarURL = "http://www.google.com/calendar/event?action=TEMPLATE&text="
+			+ escape(json.name)
+			+ "&dates="
+			+ 
+			+"/20060101T050000Z&details="
+			+ escape(json.description)
+			+ "&location="
+			+ escape(json.location)
+			+ "&trp=false&sprop=gtEvents&sprop=name:gtEvents";
+			
+			log(googleCalendarURL);
+			
+			$('#detail-view-view-fb > div > div > a').attr('href','http://www.facebook.com/event.php?eid='+detailEventId);
 			
 		});	
 		
@@ -495,10 +510,39 @@ $(document).ready(function(){
 			
 		});
 		
+		
+		
 		$('#search-form > .ui-input-search > .ui-input-clear').bind('click',function(){
 			$("#eventlist-search").html('');
 		});
 		
+	}
+	
+	
+	GTEVENTS.Pages.share = function(){
+		detailEventId = getLocalStorage("detailEventId");
+		longURL = encodeURI('http://www.facebook.com/event.php?eid='+detailEventId);
+		bitlyURL = 'http://api.bit.ly/v3/shorten?login=felixlaumon&apiKey=R_b7f4f572a543195dc58a19f6c46efbb0&longUrl=' + longURL +  '&format=json';
+		
+		$.getJSON(bitlyURL, function( data ){
+			shortURL = data.data.url;
+			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
+				jQuery.parseJSON(json);
+				var body = 'Hey! Check out this cool event: ' + json.name + '! on '
+							+ parseTime(json.start_time)[0]
+							+ 'at ' + parseTime(json.start_time)[1]
+							+ ' Find out more here: '
+							+ shortURL;
+				
+				$('#share-facebook').attr('href', '#');
+				$('#share-twitter').attr('href', '#');
+				$('#share-sms').attr('href', 'sms:');
+				$('#share-email').attr('href', 'mailto:subject=?body='+body);
+			});
+		})
+		
+		
+	
 	}
 	
 	
