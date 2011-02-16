@@ -1,4 +1,21 @@
+<!DOCTYPE html>
+<!-- Remove the header for the gtMob version -->
+<html>
+<head>
+<title>gtEvents</title>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.css" />
+<link rel="stylesheet/less" href="gtevents.less" />
+<script src="less-1.0.41.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.js"></script>
+ 
+<script src="jquery.offline.js"></script>
 
+
+<script src="gtevents.js"></script>
+</head>
+<body>
+<!-- Remember to remove the BODY end tag -->
 
 <!-- Start of main page -->
 <div data-role="page" id="main">
@@ -8,7 +25,7 @@
     <a href="http://localhost:3000/login/" class="fb-connect-btn ui-btn-right"><img src="fbconnect.png" /></a>
   </header><!-- /header -->
 
-  <div data-role="content">
+  <div id="main-list-view-bg" data-role="content">
   	<div id="event-list-tab-button-container">
 		<div id="event-list-tab-button" data-theme="b" data-role="controlgroup" data-type="horizontal">
 			<a id="event-list-tab-you" href="" data-role="button">You</a>

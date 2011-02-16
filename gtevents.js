@@ -5,15 +5,15 @@ function log(x){
 /* shorthand method for debugging */
 
 var detailEventId;
-/* var gtid = 'hlau8'; */
-var gtid;
+var gtid = 'hlau8';
+/* var gtid; */
 var SERVER_ADDRESS = 'chrisirhc.no.de';
 
 var firstLandOnMain = true;
 
 $(document).ready(function(){
 	
-	gtid = PORTAL_CLIENT.getUsername();
+	/* gtid = PORTAL_CLIENT.getUsername(); */
 	
 	/* http://forum.jquery.com/topic/jquery-mobile-equivalent-of-document-ready */
 	/* jquery mobile page ready function */
@@ -69,7 +69,7 @@ $(document).ready(function(){
 	  	
 	  	/* load all event only if it is first landed on #main */
 	  	if (firstLandOnMain == true){
-		  	getAllEvent();
+		  	getEvents('time');
 		  	switchButtonState(true,'all');
 		  	firstLandOnMain = false;
 		 }
@@ -77,7 +77,7 @@ $(document).ready(function(){
 	  	$('#event-list-tab-you').bind('click',function(event){
 	  		event.stopPropagation();
 	  		event.preventDefault();
-	  		getYouEvent();
+	  		getEvents('smart');
 	  		switchButtonState(true,'you');
 	  		switchButtonState(false,'all');
 	  		switchButtonState(false,'invited');
@@ -87,7 +87,7 @@ $(document).ready(function(){
 	  	$('#event-list-tab-all').bind('click',function(event){
 	  		event.stopPropagation();
 	  		event.preventDefault();
-	  		getAllEvent();
+	  		getEvents('time');
 	  		switchButtonState(false,'you');
 	  		switchButtonState(true,'all');
 	  		switchButtonState(false,'invited');
@@ -97,7 +97,7 @@ $(document).ready(function(){
 	  	$('#event-list-tab-attending').bind('click',function(event){
 	  		event.stopPropagation();
 	  		event.preventDefault();
-	  		getAttendingEvent();
+	  		getEvents('attending');
 	  		switchButtonState(false,'you');
 	  		switchButtonState(false,'all');
 	  		switchButtonState(false,'invited');
@@ -107,7 +107,7 @@ $(document).ready(function(){
 	  	$('#event-list-tab-invited').bind('click',function(event){
 	  		event.stopPropagation();
 	  		event.preventDefault();
-	  		getInvitedEvent();
+	  		getEvents('invited');
 	  		switchButtonState(false,'you');
 	  		switchButtonState(false,'all');
 	  		switchButtonState(true,'invited');
@@ -126,142 +126,9 @@ $(document).ready(function(){
 			}
 		}
 		
-		function getInvitedEvent(){
+		function getEvents(type){
 			$.mobile.pageLoading();
-			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/invited/"+gtid+"?callback=?", function (json, status, data) {
-			    var i, eObj;
-			    jQuery.parseJSON(json);
-			    console.log(json);
-			    $("#eventlist").html('');
-			    for (i = 0; i < json.length && (eObj = json[i]); i++) {
-			    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
-			        $("#eventlist").append(
-			           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
-			           	+ '<div class="event-list-time">'
-			           	+ parseTime(eObj["start_time"])[0]
-			           	+'<span class="event-list-time-span">'
-			           	+ parseTime(eObj["start_time"])[1]
-			           	+ '</span> - '
-			           	+ parseTime(eObj["end_time"])[0]
-			           	+ '<span class="event-list-time-span">'
-			           	+ parseTime(eObj["end_time"])[1]
-			           	+ '</span></div>'
-			           	+ '<div class="event-list-title-container">'
-				  		+ '<div class="event-list-thumbnail" style="background-image: url('
-				  		+ eObj['pic']
-				  		+')"></div>'
-				  		+ '<div class="event-list-title-details-container">'
-				  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
-					  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
-					  	+ '<div class="event-list-location">' + location_ + '</div>'
-					  	+ '</div>'
-			    		+ '</div>'
-			    		+ '<div class="clear"></div>'
-			      		+ '<div class="event-list-tab">'
-			      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
-			                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
-			      		+ '</div>'
-			            + '</a></li>');
-		    	}
-		    	$("#eventlist").listview("refresh");
-		    	$.mobile.pageLoading(true);
-		    	bindEventLink('#eventlist');		
-		  	});
-		}
-		
-		function getAttendingEvent(){
-			$.mobile.pageLoading();
-			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/attending/"+gtid+"?callback=?", function (json, status, data) {
-			$("#eventlist").html('');
-			if (json.length > 0){
-				    var i, eObj;
-				    jQuery.parseJSON(json);
-				    console.log(json);
-				    for (i = 0; i < json.length && (eObj = json[i]); i++) {
-				    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
-				        $("#eventlist").append(
-				           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
-				           	+ '<div class="event-list-time">'
-				           	+ parseTime(eObj["start_time"])[0]
-				           	+'<span class="event-list-time-span">'
-				           	+ parseTime(eObj["start_time"])[1]
-				           	+ '</span> - '
-				           	+ parseTime(eObj["end_time"])[0]
-				           	+ '<span class="event-list-time-span">'
-				           	+ parseTime(eObj["end_time"])[1]
-				           	+ '</span></div>'
-				           	+ '<div class="event-list-title-container">'
-					  		+ '<div class="event-list-thumbnail" style="background-image: url('
-					  		+ eObj['pic']
-					  		+')"></div>'
-					  		+ '<div class="event-list-title-details-container">'
-					  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
-						  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
-						  	+ '<div class="event-list-location">' + location_ + '</div>'
-						  	+ '</div>'
-				    		+ '</div>'
-				    		+ '<div class="clear"></div>'
-				      		+ '<div class="event-list-tab">'
-				      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
-				                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
-				      		+ '</div>'
-				            + '</a></li>');
-			    	}
-			    } else {
-			    	$("#eventlist").append('<li><p id="event-list-no-event">You are not attending any event</p></li>');
-			    }
-		    	$("#eventlist").listview("refresh");
-		    	$.mobile.pageLoading(true);
-		    	bindEventLink('#eventlist');		
-		  	});
-		}
-		
-		function getAllEvent(){
-			$.mobile.pageLoading();
-			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/time/"+gtid+"?callback=?", function (json, status, data) {
-			    var i, eObj;
-			    jQuery.parseJSON(json);
-			    console.log(json);
-			    $("#eventlist").html('');
-			    for (i = 0; i < json.length && (eObj = json[i]); i++) {
-			    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
-			        $("#eventlist").append(
-			           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
-			           	+ '<div class="event-list-time">'
-			           	+ parseTime(eObj["start_time"])[0]
-			           	+'<span class="event-list-time-span">'
-			           	+ parseTime(eObj["start_time"])[1]
-			           	+ '</span> - '
-			           	+ parseTime(eObj["end_time"])[0]
-			           	+ '<span class="event-list-time-span">'
-			           	+ parseTime(eObj["end_time"])[1]
-			           	+ '</span></div>'
-			           	+ '<div class="event-list-title-container">'
-				  		+ '<div class="event-list-thumbnail" style="background-image: url('
-				  		+ eObj['pic']
-				  		+')"></div>'
-				  		+ '<div class="event-list-title-details-container">'
-				  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
-					  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
-					  	+ '<div class="event-list-location">' + location_ + '</div>'
-					  	+ '</div>'
-			    		+ '</div>'
-			    		+ '<div class="clear"></div>'
-			      		+ '<div class="event-list-tab">'
-			      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
-			                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
-			      		+ '</div>'
-			            + '</a></li>');
-		    	}
-		    	$("#eventlist").listview("refresh");
-		    	$.mobile.pageLoading(true);
-		    	bindEventLink('#eventlist');		
-		  	});
-		}
-		
-		function getYouEvent(){
-			$.mobile.pageLoading();
-			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/smart/"+gtid+"?callback=?", function (json, status, data) {
+			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/" + type + "/"+gtid+"?callback=?", function (json, status, data) {
 			    var i, eObj;
 			    jQuery.parseJSON(json);
 			    console.log(json);
@@ -477,32 +344,36 @@ $(document).ready(function(){
 			    jQuery.parseJSON(json);
 			    console.log(json);
 			    $("#eventlist-search").html('');
-			    for (i = 0; i < json.length && (eObj = json[i]); i++) {
-			    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
-			        $("#eventlist-search").append(
-			           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
-			           	+ '<div class="event-list-time">'
-			           	+ parseTime(eObj["start_time"])[0]
-			           	+'<span class="event-list-time-span">'
-			           	+ parseTime(eObj["start_time"])[1]
-			           	+ '</span> - '
-			           	+ parseTime(eObj["end_time"])[0]
-			           	+ '<span class="event-list-time-span">'
-			           	+ parseTime(eObj["end_time"])[1]
-			           	+ '</span></div>'
-			           	+ '<div class="event-list-title-container">'
-				  		+ '<div class="event-list-thumbnail" style="background-image: url('
-				  		+ eObj['pic']
-				  		+')"></div>'
-				  		+ '<div class="event-list-title-details-container">'
-				  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
-					  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
-					  	+ '<div class="event-list-location">' + location_ + '</div>'
-					  	+ '</div>'
-			    		+ '</div>'
-			    		+ '<div class="clear"></div>'
-			            + '</a></li>');
-		    	}
+			    if (json.length > 0) {
+				    for (i = 0; i < json.length && (eObj = json[i]); i++) {
+				    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
+				        $("#eventlist-search").append(
+				           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
+				           	+ '<div class="event-list-time">'
+				           	+ parseTime(eObj["start_time"])[0]
+				           	+'<span class="event-list-time-span">'
+				           	+ parseTime(eObj["start_time"])[1]
+				           	+ '</span> - '
+				           	+ parseTime(eObj["end_time"])[0]
+				           	+ '<span class="event-list-time-span">'
+				           	+ parseTime(eObj["end_time"])[1]
+				           	+ '</span></div>'
+				           	+ '<div class="event-list-title-container">'
+					  		+ '<div class="event-list-thumbnail" style="background-image: url('
+					  		+ eObj['pic']
+					  		+')"></div>'
+					  		+ '<div class="event-list-title-details-container">'
+					  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
+						  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
+						  	+ '<div class="event-list-location">' + location_ + '</div>'
+						  	+ '</div>'
+				    		+ '</div>'
+				    		+ '<div class="clear"></div>'
+				            + '</a></li>');
+			    	}
+			    } else {
+			    	$("#eventlist-search").html('<li>There is no search result that matches your query.</li>')
+			    }
 		    	$("#eventlist-search").listview("refresh");
 		    	$.mobile.pageLoading(true);	
 		    	bindEventLink('#eventlist-search');
