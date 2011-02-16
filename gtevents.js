@@ -7,13 +7,15 @@ function log(x){
 var detailEventId;
 var gtid = 'hlau8';
 /* var gtid; */
+/* var gtid = 'hlau8'; */
+var gtid;
 var SERVER_ADDRESS = 'chrisirhc.no.de';
 
 var firstLandOnMain = true;
 
 $(document).ready(function(){
 	
-	/* gtid = PORTAL_CLIENT.getUsername(); */
+	gtid = PORTAL_CLIENT.getUsername();
 	
 	/* http://forum.jquery.com/topic/jquery-mobile-equivalent-of-document-ready */
 	/* jquery mobile page ready function */
@@ -222,19 +224,24 @@ $(document).ready(function(){
 				});
 			});
 			
+			var startTime =  new Date( parseInt(json.start_time) );
+			var endTime =  new Date( parseInt(json.end_time) )
+			
 			var googleCalendarURL = "http://www.google.com/calendar/event?action=TEMPLATE&text="
 			+ escape(json.name)
 			+ "&dates="
-			+ 
-			+"/20060101T050000Z&details="
+			+ ISODateString( startTime )
+			+"/"
+			+ ISODateString( endTime )
+			+"&details="
 			+ escape(json.description)
 			+ "&location="
 			+ escape(json.location)
 			+ "&trp=false&sprop=gtEvents&sprop=name:gtEvents";
 			
-			log(googleCalendarURL);
-			
 			$('#detail-view-view-fb > div > div > a').attr('href','http://www.facebook.com/event.php?eid='+detailEventId);
+			
+			$('#detail-view-add-calendar > div > div > a').attr('href', googleCalendarURL);
 			
 		});	
 		
@@ -408,7 +415,7 @@ $(document).ready(function(){
 				$('#share-facebook').attr('href', '#');
 				$('#share-twitter').attr('href', '#');
 				$('#share-sms').attr('href', 'sms:');
-				$('#share-email').attr('href', 'mailto:subject=?body='+body);
+				$('#share-email').attr('href', 'mailto:body='+body);
 			});
 		})
 		
@@ -511,4 +518,15 @@ function getLocalStorage(key){
 		}
 	}
 	return value;
+}
+
+
+function ISODateString(d){
+	function pad(n){return n<10 ? '0'+n : n}
+	return d.getUTCFullYear()
+	  + pad(d.getUTCMonth()+1)
+	  + pad(d.getUTCDate())+'T'
+	  + pad(d.getUTCHours())
+	  + pad(d.getUTCMinutes())
+	  + pad(d.getUTCSeconds())+'Z'
 }
