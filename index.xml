@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding = "utf-8" ?>
+<widget title="GTEvents">
+	<doctype></doctype>
+	<icon>icon.png</icon>
+	
+	<css>root/css/jquery.mobile-1.0a2.min.css</css>
+	<javascript>root/js/jquery-1.4.4.min.js</javascript>
+ 	<javascript>root/js/jquery.mobile-1.0a2.min.js</javascript>
+	
+	<javascript>uname/gtevents.js</javascript>
+	<javascript>uname/jquery.offline.js</javascript>
+	<css>uname/gtevents.css</css>
+	
+	<html>index.html</html>
+</widget>
