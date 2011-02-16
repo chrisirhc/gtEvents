@@ -12,8 +12,6 @@ var firstLandOnMain = true;
 
 $(document).ready(function(){
 	
-	gtid = PORTAL_CLIENT.getUsername();
-	
 	/* http://forum.jquery.com/topic/jquery-mobile-equivalent-of-document-ready */
 	/* jquery mobile page ready function */
 	/* init GTEVENTS.Pages object */
