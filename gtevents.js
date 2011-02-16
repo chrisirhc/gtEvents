@@ -83,7 +83,7 @@ $(document).ready(function(){
 	  	$('#event-list-tab-attending').bind('click',function(event){
 	  		event.stopPropagation();
 	  		event.preventDefault();
-	  		
+	  		getAttendingEvent();
 	  		switchButtonState(false,'all');
 	  		switchButtonState(false,'invited');
 	  		switchButtonState(true,'attending');
@@ -153,9 +153,52 @@ $(document).ready(function(){
 		  	});
 		}
 		
+		function getAttendingEvent(){
+			$.mobile.pageLoading();
+			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/attending/"+gtid+"?callback=?", function (json, status, data) {
+			    var i, eObj;
+			    jQuery.parseJSON(json);
+			    console.log(json);
+			    $("#eventlist").html('');
+			    for (i = 0; i < json.length && (eObj = json[i]); i++) {
+			    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
+			        $("#eventlist").append(
+			           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
+			           	+ '<div class="event-list-time">'
+			           	+ parseTime(eObj["start_time"])[0]
+			           	+'<span class="event-list-time-span">'
+			           	+ parseTime(eObj["start_time"])[1]
+			           	+ '</span> - '
+			           	+ parseTime(eObj["end_time"])[0]
+			           	+ '<span class="event-list-time-span">'
+			           	+ parseTime(eObj["end_time"])[1]
+			           	+ '</span></div>'
+			           	+ '<div class="event-list-title-container">'
+				  		+ '<div class="event-list-thumbnail" style="background-image: url('
+				  		+ eObj['pic']
+				  		+')"></div>'
+				  		+ '<div class="event-list-title-details-container">'
+				  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
+					  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
+					  	+ '<div class="event-list-location">' + location_ + '</div>'
+					  	+ '</div>'
+			    		+ '</div>'
+			    		+ '<div class="clear"></div>'
+			      		+ '<div class="event-list-tab">'
+			      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
+			                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
+			      		+ '</div>'
+			            + '</a></li>');
+		    	}
+		    	$("#eventlist").listview("refresh");
+		    	$.mobile.pageLoading(true);
+		    	bindEventLink('#eventlist');		
+		  	});
+		}
+		
 		function getAllEvent(){
 			$.mobile.pageLoading();
-			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/time/"+gtid+"?callback=?", function (json, status, data) {
+			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/smart/"+gtid+"?callback=?", function (json, status, data) {
 			    var i, eObj;
 			    jQuery.parseJSON(json);
 			    console.log(json);
