@@ -28,6 +28,7 @@
   <div data-role="content">
   	<div id="event-list-tab-button-container">
 		<div id="event-list-tab-button" data-theme="b" data-role="controlgroup" data-type="horizontal">
+			<a id="event-list-tab-you" href="" data-role="button">You</a>
 			<a id="event-list-tab-all" href="" data-role="button">All</a>
 			<a id="event-list-tab-attending" href="" data-role="button">Attending</a>
 			<a id="event-list-tab-invited" href="" data-role="button">Invited</a>
@@ -134,7 +135,7 @@
 		</ul>
 		
 		<ul class="detail-view-details" data-role="listview" data-inset="true">
-			<li id="detail-view-desc"><a href="#description">Description</a><p id="detail-view-desc-p"> This is the description when it is too long long long long long long long </p></li>
+			<li id="detail-view-desc"><a href="#description">Description</a><p id="detail-view-desc-p"></p></li>
 			<li id="detail-view-wall"><a href="#wall">Wall <span id="detail-view-wall-count" class="ui-li-count">12</span></a></li>
 		</ul>
 		
@@ -167,6 +168,7 @@
 		<h1>Description</h1>
 	</div>
 	<div data-role="content">
+		<h3 id="description-view-h3"></h3>
 		<p id="description-view-content"></p>
 	</div>
 </div>
