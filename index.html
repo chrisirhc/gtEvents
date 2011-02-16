@@ -20,6 +20,7 @@
 <!-- Start of main page -->
 <div data-role="page" id="main">
   <header data-role="header" data-theme="a">
+    <a href="#search" id="header-search-button" class="ui-btn-left">Search</a>
     <h1>GtEvents</h1>
     <a href="http://localhost:3000/login/" class="fb-connect-btn ui-btn-right"><img src="fbconnect.png" /></a>
   </header><!-- /header -->
@@ -27,9 +28,9 @@
   <div data-role="content">
   	<div id="event-list-tab-button-container">
 		<div id="event-list-tab-button" data-theme="b" data-role="controlgroup" data-type="horizontal">
-			<a id="event-list-tab-all-link" href="" data-role="button">All</a>
-			<a id="event-list-tab-all-attending" href="" data-role="button">Attending</a>
-			<a id="event-list-tab-all-invited" href="" data-role="button">Invited</a>
+			<a id="event-list-tab-all" href="" data-role="button">All</a>
+			<a id="event-list-tab-attending" href="" data-role="button">Attending</a>
+			<a id="event-list-tab-invited" href="" data-role="button">Invited</a>
 		</div>
 	</div>
   <ul id="eventlist" data-role="listview" data-dividertheme="c">
@@ -93,9 +94,9 @@
   <div data-role="content" class="ui-body">
 	  	<div class="detail-view-thumbnail"></div>
 	  	<div class="detail-view-title-container">
-		  	<h2 class="detail-view-title">FutureMedia Fest 2010</h2>
-		  	<p class="detail-view-location">at Georgia Tech Hotel and Conference Center</p>
-		  	<p class="detail-view-organizer">by College of Computing</p>
+		  	<h2 class="detail-view-title"></h2>
+		  	<p class="detail-view-location"></p>
+		  	<p class="detail-view-organizer"></p>
 		</div>
 		
 		<div id="rsvp-container" data-role="fieldcontain">
@@ -119,8 +120,8 @@
 -->
 		
 		<ul class="detail-view-start-end-time" data-role="listview" data-inset="true">
-			<li id="detail-view-start-li">Start <span>21st Jan 3:50pm</span> </li>
-			<li id="detail-view-end-li">End <span>23rd Jan 5:20pm</span></li>
+			<li id="detail-view-start-li">Start <span></span> </li>
+			<li id="detail-view-end-li">End <span></span></li>
 		</ul>
 		
 		<div class="ui-loader">
@@ -134,7 +135,7 @@
 		
 		<ul class="detail-view-details" data-role="listview" data-inset="true">
 			<li id="detail-view-desc"><a href="#description">Description</a><p id="detail-view-desc-p"> This is the description when it is too long long long long long long long </p></li>
-			<li id="detail-view-wall"><a href="#wall">Wall <span class="ui-li-count">12</span></a></li>
+			<li id="detail-view-wall"><a href="#wall">Wall <span id="detail-view-wall-count" class="ui-li-count">12</span></a></li>
 		</ul>
 		
 		<ul class="detail-view-details" data-role="listview" data-inset="true">
@@ -166,7 +167,7 @@
 		<h1>Description</h1>
 	</div>
 	<div data-role="content">
-		<p id="description-view-content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p id="description-view-content"></p>
 	</div>
 </div>
 
@@ -179,10 +180,12 @@
 	</div>
 	<div data-role="content" data-theme="c">
 		<ul data-role="listview" id="friends-view-list">
+<!--
 			<li>
 				<div class="friends-view-thumbnail" style="background-image: https://graph.facebook.com/569746586/picture"></div>
-				<h3 class="friends-view-name">Lorem Ipsum</h3>
+				<h3 class="friends-view-name"></h3>
 			</li>
+-->
 		</ul>
 	</div>
 </div>
@@ -193,10 +196,12 @@
 	</div>
 	<div data-role="content" data-theme="c">
 		<ul data-role="listview" id="attendees-view-list">
+<!--
 			<li>
 				<div class="attendees-view-thumbnail" style="background-image: https://graph.facebook.com/569746586/picture"></div>
-				<h3 class="attendees-view-name">Lorem Ipsum</h3>
+				<h3 class="attendees-view-name"></h3>
 			</li>
+-->
 		</ul>
 	</div>
 </div>
@@ -207,14 +212,16 @@
 	</div>
 	<div data-role="content" data-theme="c">
 		<ul data-role="listview" id="wall-view-list">
+<!--
 			<li>
 				<div class="wall-view-thumbnail"></div>
 				<div class="wall-view-content-container">
-					<p class="wall-view-name">Felix Lau</p>
-					<p class="wall-view-content">This is cool asdf asdf  a sdf as dfj asdf asd fkjas dflashguwrengje rgluerg erger eirg;oierjgleuhgeuhgeaughaeiufhwuahrfu awerfu ahrlifuhasliufhlawiu fhliwu li are;oigje;origjaoeri goeirjgoei jfoer</p>
-					<p class="wall-view-post-time">2 hours ago</p>
+					<p class="wall-view-name"></p>
+					<p class="wall-view-content"></p>
+					<p class="wall-view-post-time"></p>
 				</div>
 			</li>
+-->
 		</ul>
 	</div>
 </div>
@@ -230,6 +237,24 @@
 		<a href="#bar" data-role="button" data-theme="c">Email</a>
 		<a href="#bar" data-role="button" data-theme="c">Facebook</a>
 		<a href="#bar" data-role="button" data-theme="c">Twitter</a>
+	</div>
+</div>
+
+<div data-role="page" id="search">
+	<div data-role="header" data-theme="d" data-position="inline"> 
+		<h1>Search</h1>
+	</div>
+	<div data-role="content">
+		
+		<div id="search-container" data-role="fieldcontain">
+			<!-- form element for showing the search button on ios -->
+			<form id="search-form"><input type="search" name="search" id="search-input" value="" /></form>
+		</div>
+		
+		<ul id="eventlist-search" data-role="listview" data-dividertheme="c">
+		 	
+		</ul>
+		
 	</div>
 </div>
 

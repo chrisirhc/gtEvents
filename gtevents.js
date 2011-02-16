@@ -8,6 +8,9 @@ var detailEventId;
 var gtid = 'hlau8';
 var SERVER_ADDRESS = 'localhost:3000'
 
+var firstLandOnMain = true;
+
+
 $(document).ready(function(){
 	
 	/* http://forum.jquery.com/topic/jquery-mobile-equivalent-of-document-ready */
@@ -18,6 +21,13 @@ $(document).ready(function(){
 	
 	/* combine fb connect link with gtid */
 	$('.fb-connect-btn').attr('href','http://'+ SERVER_ADDRESS +'/login/'+gtid);
+	
+	$('#header-search-button').bind('click',function(event){
+  		event.stopPropagation();
+  		event.preventDefault();
+  		$.mobile.changePage('#search', 'slide', false, true);
+	 });
+	
 	/* check if the user has connected with fb or not and hide certain functions */
 	/* status store offline so that there is no delay in hiding the facebook img */
 	$.retrieveJSON('http://'+ SERVER_ADDRESS +'/status/' + gtid + '?callback=?', function(json, status, data){
@@ -30,6 +40,7 @@ $(document).ready(function(){
 			$('#detail-view-friend-list').show();
 			$('#detail-view-wall').show();
 			$('.detail-view-details').listview('refresh');
+			
 		}
 		else{
 			$('#rsvp-container').hide();
@@ -41,7 +52,7 @@ $(document).ready(function(){
 	
 	/* #main page ready function */
 	GTEVENTS.Pages.main = function(){
-	
+		
 		/* expandable top 5 attending friend */
 		$('.event-list-tab-friend').bind('click',function(event){
 			/* do not follow link when click on tab in list */
@@ -52,22 +63,52 @@ $(document).ready(function(){
 			var $extendedPanel = $(this).parent().parent().parent().parent().parent().next('.event-list-tab-extended');
 			$extendedPanel.slideToggle('fast');
 		},false)
-		
-		getAllEvent();
-		
-		/* Start the grabbing of the data from the server */
 	  	
-	  	$('#event-list-tab-all-link').bind('click',function(event){
+	  	/* load all event only if it is first landed on #main */
+	  	if (firstLandOnMain == true){
+		  	getAllEvent();
+		  	switchButtonState(true,'all');
+		  	firstLandOnMain = false;
+		 }
+	  	
+	  	$('#event-list-tab-all').bind('click',function(event){
 	  		event.stopPropagation();
 	  		event.preventDefault();
 	  		getAllEvent();
+	  		switchButtonState(true,'all');
+	  		switchButtonState(false,'invited');
+	  		switchButtonState(false,'attending');
 	  	});
 	  	
-	  	$('#event-list-tab-all-invited').bind('click',function(event){
+	  	$('#event-list-tab-attending').bind('click',function(event){
 	  		event.stopPropagation();
 	  		event.preventDefault();
-	  		getAllEvent();
+	  		
+	  		switchButtonState(false,'all');
+	  		switchButtonState(false,'invited');
+	  		switchButtonState(true,'attending');
 	  	});
+	  	
+	  	$('#event-list-tab-invited').bind('click',function(event){
+	  		event.stopPropagation();
+	  		event.preventDefault();
+	  		getInvitedEvent();
+	  		switchButtonState(false,'all');
+	  		switchButtonState(true,'invited');
+	  		switchButtonState(false,'attending');
+	  	});
+	  	
+		
+		/* state: down is true, up is false */
+		function switchButtonState(state,button){
+			if (state==true){
+				$('#event-list-tab-'+button).attr('data-theme', 'b');
+				$('#event-list-tab-'+button).removeClass('ui-btn-up-c ui-btn-hover-c').addClass('ui-btn-up-b');
+			} else if (state==false) {
+				$('#event-list-tab-'+button).attr('data-theme', 'c');
+				$('#event-list-tab-'+button).removeClass('ui-btn-up-b').addClass('ui-btn-up-c ui-btn-hover-c');
+			}
+		}
 		
 		function getInvitedEvent(){
 			$.mobile.pageLoading();
@@ -108,7 +149,7 @@ $(document).ready(function(){
 		    	}
 		    	$("#eventlist").listview("refresh");
 		    	$.mobile.pageLoading(true);
-		    	bindLink();		
+		    	bindEventLink('#eventlist');		
 		  	});
 		}
 		
@@ -151,21 +192,8 @@ $(document).ready(function(){
 		    	}
 		    	$("#eventlist").listview("refresh");
 		    	$.mobile.pageLoading(true);
-		    	bindLink();		
+		    	bindEventLink('#eventlist');		
 		  	});
-		}
-			
-		function bindLink(){
-			/* manually handle link forwarding */
-		    $('#eventlist > li').bind('click', function(event){
-				detailEventId = ($(this).attr('id'));
-				setLocalStorage("detailEventId", detailEventId);
-				
-				event.stopPropagation();
-				event.preventDefault();
-				
-				$.mobile.changePage('#detail', 'slide', false, true);
-			});
 		}
 		
 	}
@@ -180,6 +208,7 @@ $(document).ready(function(){
 		
 		var rsvpStatusWord = [];
 		rsvpStatusWord['not_replied'] = 0;
+		rsvpStatusWord['noreply'] = 0;
 		rsvpStatusWord['attending'] = 1;
 		rsvpStatusWord['maybe'] = 2;
 		rsvpStatusWord['declined'] = 3;
@@ -196,7 +225,8 @@ $(document).ready(function(){
 			$('#detail-view-desc-p').html( json.description.slice(0,100) );
 			$('#detail-view-friend-count').html(json.friend_count);
 			$('#detail-view-attendees-count').html(json.total_count);
-			
+			$('#detail-view-attendees-count').html(json.total_count);
+			$('#detail-view-wall-count').html(json.feed_count);
 			
 			/* RSVP get status*/
 			$('#rsvp-status option')[ rsvpStatusWord[json.rsvp_status] ]['selected'] = true;
@@ -204,10 +234,17 @@ $(document).ready(function(){
 			
 			/* RSVP set status*/
 			$('#rsvp-status').change(function(){
-				$.mobile.pageLoading();
+				
 				log ( $('#rsvp-status option:selected').attr('value') );
 				var rsvpStatus = $('#rsvp-status option:selected').attr('value')
-				$.getJSON("http://"+ SERVER_ADDRESS +"/event/rsvp/"+ rsvpStatus +"/event:fb:"+ detailEventId +"/"+ gtid, function(data){ log(data); $.mobile.pageLoading(true); });
+				$.getJSON("http://"+ SERVER_ADDRESS +"/event/rsvp/"+ rsvpStatus +"/event:fb:"+ detailEventId +"/"+ gtid + "?callback=?", function(data){
+					$.parseJSON(data);
+					if (data.response != 'true'){
+						popErrorMessage('Error in setting RSVP status');
+						$('#rsvp-status option')[ rsvpStatusWord[json.rsvp_status] ]['selected'] = true;
+						$('#rsvp-status').selectmenu('refresh',true);
+					}
+				});
 			});
 			
 		});	
@@ -241,7 +278,7 @@ $(document).ready(function(){
 	GTEVENTS.Pages.wall = function(){
 		$.mobile.pageLoading();
 		detailEventId = getLocalStorage("detailEventId");
-		$.retrieveJSON("http://"+ SERVER_ADDRESS +":3000/event/feed/event:fb:" + detailEventId + "?callback=?" , function(json,status,data){
+		$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/feed/event:fb:" + detailEventId + "?callback=?" , function(json,status,data){
 			$("#wall-view-list").html('');
 			jQuery.parseJSON(json);
 			log(json);
@@ -249,7 +286,7 @@ $(document).ready(function(){
 					for (i=0; i<json.length; i++){
 						$("#wall-view-list").append(
 							'<li><div class="wall-view-thumbnail" style="background-image: url('
-							+ 'https://graph.facebook.com/' + json[i].id + '/picture'
+							+ 'https://graph.facebook.com/' + json[i].actor_id + '/picture'
 							+')"></div><div class="wall-view-content-container"><p class="wall-view-name">'
 							+ json[i].name
 							+ '</p><p class="wall-view-content">'
@@ -273,8 +310,9 @@ $(document).ready(function(){
 	GTEVENTS.Pages.description = function(){
 		$('#description-view-content').html('');
 		detailEventId = getLocalStorage("detailEventId");
-		$.retrieveJSON("http://"+ SERVER_ADDRESS +":3000/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
+		$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
 			jQuery.parseJSON(json);
+			desc = json;
 			$('#description-view-content').html(json.description.replace(/\n/g,'<br />'));
 		});
 	}
@@ -282,7 +320,7 @@ $(document).ready(function(){
 	GTEVENTS.Pages.friends = function(){
 		$('#description-view-content').html('');
 		detailEventId = getLocalStorage("detailEventId");
-		$.retrieveJSON("http://"+ SERVER_ADDRESS +":3000/event/attendance/friend/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
+		$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/attendance/friend/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
 			$("#friends-view-list").html('');
 			jQuery.parseJSON(json);
 			if (json.length > 0){
@@ -297,15 +335,66 @@ $(document).ready(function(){
 					);
 				}
 			} else {
-				$("#friends-view-list").html('<li>No wall post for this event<li>');
+				$("#friends-view-list").html('<li>No friend is attending this event.<li>');
 			}
 			$("#friends-view-list").listview("refresh");
 			$.mobile.pageLoading(true);
 		});
 	}
 	
+	GTEVENTS.Pages.search = function(){
+		$('#search-form').bind('submit', function(e){
+			e.preventDefault();
+			e.stopPropagation();
+			var searchTerm = $('#search-input').val();
+			log(searchTerm);
+			$.mobile.pageLoading();	
+			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/search/" + searchTerm + "/" + gtid + "?callback=?", function (json, status, data) {
+			    var i, eObj;
+			    jQuery.parseJSON(json);
+			    console.log(json);
+			    $("#eventlist-search").html('');
+			    for (i = 0; i < json.length && (eObj = json[i]); i++) {
+			    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
+			        $("#eventlist-search").append(
+			           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
+			           	+ '<div class="event-list-time">'
+			           	+ parseTime(eObj["start_time"])[0]
+			           	+'<span class="event-list-time-span">'
+			           	+ parseTime(eObj["start_time"])[1]
+			           	+ '</span> - '
+			           	+ parseTime(eObj["end_time"])[0]
+			           	+ '<span class="event-list-time-span">'
+			           	+ parseTime(eObj["end_time"])[1]
+			           	+ '</span></div>'
+			           	+ '<div class="event-list-title-container">'
+				  		+ '<div class="event-list-thumbnail" style="background-image: url('
+				  		+ eObj['pic']
+				  		+')"></div>'
+				  		+ '<div class="event-list-title-details-container">'
+				  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
+					  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
+					  	+ '<div class="event-list-location">' + location_ + '</div>'
+					  	+ '</div>'
+			    		+ '</div>'
+			    		+ '<div class="clear"></div>'
+			            + '</a></li>');
+		    	}
+		    	$("#eventlist-search").listview("refresh");
+		    	$.mobile.pageLoading(true);	
+		    	bindEventLink('#eventlist-search');
+		  	});
+			
+		});
+		
+		$('#search-form > .ui-input-search > .ui-input-clear').bind('click',function(){
+			$("#eventlist-search").html('');
+		});
+		
+	}
 	
-	/* call function when either the page is transition to or when this is the page */
+	
+	/* call ready function when either the page is transition to or when this is the page */
 	jQuery("div[data-role*='page']").live('pageshow', function(event, ui) {
         var thisId=$(this).attr("id")
         thisId = thisId.replace(/\.html$/gi,"");
@@ -322,6 +411,31 @@ $(document).ready(function(){
     }
 	
 });
+
+/* manually handle link forwarding for list view in main view and search view*/
+function bindEventLink(listName){
+	
+    $(listName + ' > li').bind('click', function(event){
+		detailEventId = ($(this).attr('id'));
+		setLocalStorage("detailEventId", detailEventId);
+		
+		event.stopPropagation();
+		event.preventDefault();
+		
+		$.mobile.changePage('#detail', 'slide', false, true);
+	});
+}
+
+/* display jquery mobile error dialog */
+function popErrorMessage(errorMessage){
+	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>" + errorMessage  + "</h1></div>")
+	.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
+	.appendTo( $('body'))
+	.delay( 800 )
+	.fadeOut( 400, function(){
+		$(this).remove();
+	}); 
+}
 
 /* take in UNIX time in string format and output [0] as date and [1] as time */
 function parseTime(time){
