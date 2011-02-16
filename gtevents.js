@@ -6,15 +6,15 @@ function log(x){
 
 var detailEventId;
 /* var gtid = 'hlau8'; */
-var gtid = PORTAL_CLIENT.getUsername();
-
+var gtid;
 
 var SERVER_ADDRESS = 'chrisirhc.no.de';
 
 var firstLandOnMain = true;
 
-
 $(document).ready(function(){
+	
+	gtid = PORTAL_CLIENT.getUsername();
 	
 	/* http://forum.jquery.com/topic/jquery-mobile-equivalent-of-document-ready */
 	/* jquery mobile page ready function */
@@ -42,13 +42,14 @@ $(document).ready(function(){
 			$('#rsvp-container').show();
 			$('#detail-view-friend-list').show();
 			$('#detail-view-wall').show();
+			$('#event-list-tab-button-container').show();
 			$('.detail-view-details').listview('refresh');
-			
 		}
 		else{
 			$('#rsvp-container').hide();
 			$('#detail-view-friend-list').hide();
 			$('#detail-view-wall').hide();
+			$('#event-list-tab-button-container').hide();
 			$('.detail-view-details').listview('refresh');
 		}
 	});
@@ -74,10 +75,21 @@ $(document).ready(function(){
 		  	firstLandOnMain = false;
 		 }
 	  	
+	  	$('#event-list-tab-you').bind('click',function(event){
+	  		event.stopPropagation();
+	  		event.preventDefault();
+	  		getYouEvent();
+	  		switchButtonState(true,'you');
+	  		switchButtonState(false,'all');
+	  		switchButtonState(false,'invited');
+	  		switchButtonState(false,'attending');
+	  	});
+	  	
 	  	$('#event-list-tab-all').bind('click',function(event){
 	  		event.stopPropagation();
 	  		event.preventDefault();
 	  		getAllEvent();
+	  		switchButtonState(false,'you');
 	  		switchButtonState(true,'all');
 	  		switchButtonState(false,'invited');
 	  		switchButtonState(false,'attending');
@@ -87,6 +99,7 @@ $(document).ready(function(){
 	  		event.stopPropagation();
 	  		event.preventDefault();
 	  		getAttendingEvent();
+	  		switchButtonState(false,'you');
 	  		switchButtonState(false,'all');
 	  		switchButtonState(false,'invited');
 	  		switchButtonState(true,'attending');
@@ -96,6 +109,7 @@ $(document).ready(function(){
 	  		event.stopPropagation();
 	  		event.preventDefault();
 	  		getInvitedEvent();
+	  		switchButtonState(false,'you');
 	  		switchButtonState(false,'all');
 	  		switchButtonState(true,'invited');
 	  		switchButtonState(false,'attending');
@@ -159,6 +173,53 @@ $(document).ready(function(){
 		function getAttendingEvent(){
 			$.mobile.pageLoading();
 			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/attending/"+gtid+"?callback=?", function (json, status, data) {
+			$("#eventlist").html('');
+			if (json.length > 0){
+				    var i, eObj;
+				    jQuery.parseJSON(json);
+				    console.log(json);
+				    for (i = 0; i < json.length && (eObj = json[i]); i++) {
+				    	location_ = (eObj["location"] == '')?'':('at ' + eObj["location"]);
+				        $("#eventlist").append(
+				           	'<li id="'+ eObj["eid"] +'"><a href="#detail">'
+				           	+ '<div class="event-list-time">'
+				           	+ parseTime(eObj["start_time"])[0]
+				           	+'<span class="event-list-time-span">'
+				           	+ parseTime(eObj["start_time"])[1]
+				           	+ '</span> - '
+				           	+ parseTime(eObj["end_time"])[0]
+				           	+ '<span class="event-list-time-span">'
+				           	+ parseTime(eObj["end_time"])[1]
+				           	+ '</span></div>'
+				           	+ '<div class="event-list-title-container">'
+					  		+ '<div class="event-list-thumbnail" style="background-image: url('
+					  		+ eObj['pic']
+					  		+')"></div>'
+					  		+ '<div class="event-list-title-details-container">'
+					  		+ '<div class="event-list-title">' + eObj["name"] + '</div>'
+						  	+ '<div class="event-list-organizer">by ' + eObj["host"] + '</div>'
+						  	+ '<div class="event-list-location">' + location_ + '</div>'
+						  	+ '</div>'
+				    		+ '</div>'
+				    		+ '<div class="clear"></div>'
+				      		+ '<div class="event-list-tab">'
+				      		+ '<span class="event-list-tab-friend">' + eObj["friend_count"] +' friends</span>'
+				                + '<span class="event-list-tab-attendees">' + eObj["total_count"] + ' attendees</span>'
+				      		+ '</div>'
+				            + '</a></li>');
+			    	}
+			    } else {
+			    	$("#eventlist").append('<li><p id="event-list-no-event">You are not attending any event</p></li>');
+			    }
+		    	$("#eventlist").listview("refresh");
+		    	$.mobile.pageLoading(true);
+		    	bindEventLink('#eventlist');		
+		  	});
+		}
+		
+		function getAllEvent(){
+			$.mobile.pageLoading();
+			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/time/"+gtid+"?callback=?", function (json, status, data) {
 			    var i, eObj;
 			    jQuery.parseJSON(json);
 			    console.log(json);
@@ -199,7 +260,7 @@ $(document).ready(function(){
 		  	});
 		}
 		
-		function getAllEvent(){
+		function getYouEvent(){
 			$.mobile.pageLoading();
 			$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/list/smart/"+gtid+"?callback=?", function (json, status, data) {
 			    var i, eObj;
@@ -359,6 +420,7 @@ $(document).ready(function(){
 		$.retrieveJSON("http://"+ SERVER_ADDRESS +"/event/detail/event:fb:" + detailEventId + '/' + gtid + "?callback=?" , function(json,status,data){
 			jQuery.parseJSON(json);
 			desc = json;
+			$('#description-view-h3').html(json.name);
 			$('#description-view-content').html(json.description.replace(/\n/g,'<br />'));
 		});
 	}
